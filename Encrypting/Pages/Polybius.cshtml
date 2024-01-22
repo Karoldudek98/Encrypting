@@ -1,0 +1,67 @@
+﻿@page
+@model Encrypting.Pages.PolybiusModel
+@{
+    ViewData["Title"] = "Polybius";
+}
+
+<h1>Polybius Encryption</h1>
+
+<form method="post">
+    <label for="inputText">Enter Text:</label>
+    <input type="text" id="inputText" name="inputText" required />
+
+    <h3>Select Grid Configuration:</h3>
+
+    <div>
+        <input type="radio" id="grid1" name="gridConfig" value="2-20" required />
+        <label for="grid1">2 rows x 20 columns</label>
+    </div>
+
+    <div>
+        <input type="radio" id="grid2" name="gridConfig" value="3-12" />
+        <label for="grid2">3 rows x 12 columns</label>
+    </div>
+
+    <div>
+        <input type="radio" id="grid3" name="gridConfig" value="4-9" />
+        <label for="grid3">4 rows x 9 columns</label>
+    </div>
+
+    <div>
+        <input type="radio" id="grid4" name="gridConfig" value="7-5" />
+        <label for="grid4">7 rows x 5 columns</label>
+    </div>
+
+    <div>
+        <input type="radio" id="grid5" name="gridConfig" value="6-6" />
+        <label for="grid5">6 rows x 6 columns</label>
+    </div>
+
+    <button type="submit">Encrypt</button>
+</form>
+
+@if (Model.EncryptedText != null && Model.PolybiusGrid != null)
+{
+    <h3>Encrypted Text:</h3>
+    <p>@Model.EncryptedText</p>
+    <h3>Polybius Square:</h3>
+    <table border="1">
+        <tr>
+            <th></th>
+            @for (int col = 1; col <= Model.PolybiusGrid.GetLength(1); col++)
+            {
+                <th>@col</th>
+            }
+        </tr>
+        @for (int row = 1; row <= Model.PolybiusGrid.GetLength(0); row++)
+        {
+            <tr>
+                <th>@row</th>
+                @for (int col = 1; col <= Model.PolybiusGrid.GetLength(1); col++)
+                {
+                    <td>@Model.PolybiusGrid[row - 1, col - 1]</td>
+                }
+            </tr>
+        }
+    </table>
+}
