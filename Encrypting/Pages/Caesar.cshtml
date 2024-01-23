@@ -4,7 +4,7 @@
     ViewData["Title"] = "Ceasar";
 }
 
-<h1>Caesar Cipher Encryption</h1>
+<h1>Caesar Cipher</h1>
 
 <form method="post">
     <label for="inputText">Enter Text:</label>
@@ -13,11 +13,12 @@
     <label for="shift">Enter Shift:</label>
     <input type="number" id="shift" name="shift" required />
 
-    <button type="submit">Encrypt</button>
+    <button type="submit" name="operation" value="encrypt">Encrypt</button>
+    <button type="submit" name="operation" value="decrypt">Decrypt</button>
 </form>
 
-@if (Model.EncryptedText != null)
+@if (Model.ResultText != null)
 {
-    <h3>Encrypted Text:</h3>
-    <p>@Model.EncryptedText</p> 
+    <h3>Result Text:</h3>
+    <p>@Model.ResultText</p>
 }

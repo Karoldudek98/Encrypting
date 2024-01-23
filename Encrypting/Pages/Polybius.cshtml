@@ -4,7 +4,7 @@
     ViewData["Title"] = "Polybius";
 }
 
-<h1>Polybius Encryption</h1>
+<h1>Polybius Encryption and Decryption</h1>
 
 <form method="post">
     <label for="inputText">Enter Text:</label>
@@ -37,13 +37,19 @@
         <label for="grid5">6 rows x 6 columns</label>
     </div>
 
-    <button type="submit">Encrypt</button>
+    <label for="operation">Select Operation:</label>
+    <select id="operation" name="operation" required>
+        <option value="encrypt">Encrypt</option>
+        <option value="decrypt">Decrypt</option>
+    </select>
+
+    <button type="submit">Submit</button>
 </form>
 
-@if (Model.EncryptedText != null && Model.PolybiusGrid != null)
+@if (Model.OutputText != null && Model.PolybiusGrid != null)
 {
-    <h3>Encrypted Text:</h3>
-    <p>@Model.EncryptedText</p>
+    <h3>Result:</h3>
+    <p>@Model.OutputText</p>
     <h3>Polybius Square:</h3>
     <table border="1">
         <tr>

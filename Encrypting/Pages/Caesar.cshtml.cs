@@ -12,11 +12,21 @@ namespace Encrypting.Pages
         [BindProperty]
         public int Shift { get; set; }
 
-        public string EncryptedText { get; private set; }
+        [BindProperty]
+        public string Operation { get; set; }
+
+        public string ResultText { get; private set; }
 
         public void OnPost()
         {
-            EncryptedText = EncryptCaesar(InputText, Shift);
+            if (Operation == "encrypt")
+            {
+                ResultText = EncryptCaesar(InputText, Shift);
+            }
+            else if (Operation == "decrypt")
+            {
+                ResultText = DecryptCaesar(InputText, Shift);
+            }
         }
 
         private string EncryptCaesar(string input, int shift)
@@ -52,6 +62,13 @@ namespace Encrypting.Pages
             }
 
             return result.ToString();
+        }
+
+        private string DecryptCaesar(string input, int shift)
+        {
+            shift = -shift;
+
+            return EncryptCaesar(input, shift);
         }
     }
 }

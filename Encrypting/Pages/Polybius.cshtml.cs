@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
 using System.Text;
 
 namespace Encrypting.Pages
@@ -9,7 +10,10 @@ namespace Encrypting.Pages
         [BindProperty]
         public string InputText { get; set; }
 
-        public string EncryptedText { get; private set; }
+        [BindProperty]
+        public string Operation { get; set; }
+
+        public string OutputText { get; private set; }
 
         public char[,] PolybiusGrid { get; set; }
 
@@ -19,30 +23,33 @@ namespace Encrypting.Pages
             if (configParts.Length == 2 && int.TryParse(configParts[0], out int rows) && int.TryParse(configParts[1], out int columns))
             {
                 PolybiusGrid = GeneratePolybiusGrid(rows, columns);
-                EncryptedText = EncryptPolybius(InputText);
+                if (Operation == "encrypt")
+                {
+                    OutputText = EncryptPolybius(InputText);
+                }
+                else if (Operation == "decrypt")
+                {
+                    OutputText = DecryptPolybius(InputText);
+                }
             }
             else
             {
-                // Handle invalid configuration
+
             }
         }
 
         private char[,] GeneratePolybiusGrid(int rows, int columns)
         {
-            // Validate the input and ensure it's a valid grid size
             if (rows <= 0 || columns <= 0)
             {
-                // Invalid grid size, return null or handle accordingly
                 return null;
             }
 
             char[,] grid = new char[rows, columns];
             int currentIndex = 0;
 
-            // Define the Polish alphabet
             string polishAlphabet = "a¹bcædeêfghijkl³mnñoópqrsœtuvwxyzŸ¿";
 
-            // Fill the grid with characters from the Polish alphabet
             for (int row = 0; row < rows; row++)
             {
                 for (int col = 0; col < columns; col++)
@@ -54,7 +61,6 @@ namespace Encrypting.Pages
                     }
                     else
                     {
-                        // If the Polish alphabet is exhausted, fill the remaining cells with spaces or handle accordingly
                         grid[row, col] = ' ';
                     }
                 }
@@ -67,7 +73,6 @@ namespace Encrypting.Pages
         {
             StringBuilder result = new StringBuilder();
 
-            // Ensure PolybiusGrid is not null before proceeding
             if (PolybiusGrid != null)
             {
                 foreach (char c in input.ToLower())
@@ -77,17 +82,17 @@ namespace Encrypting.Pages
                         int row, col;
                         if (TryGetCharPosition(c, out row, out col))
                         {
-                            result.Append($"{row}{col} ");
+                            row++;
+                            col++;
+                            result.Append($"{row:D2}{col:D2} ");
                         }
                         else
                         {
-                            // Character not found in the user-defined grid, keep it unchanged
                             result.Append(c);
                         }
                     }
                     else
                     {
-                        // Non-letter characters or characters not in the Polish alphabet, keep them unchanged
                         result.Append(c);
                     }
                 }
@@ -96,15 +101,49 @@ namespace Encrypting.Pages
             return result.ToString().Trim();
         }
 
+        private string DecryptPolybius(string input)
+        {
+            StringBuilder result = new StringBuilder();
+
+            if (PolybiusGrid != null)
+            {
+                string[] digitPairs = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var digitPair in digitPairs)
+                {
+                    if (int.TryParse(digitPair.Substring(0, 2), out int row) && int.TryParse(digitPair.Substring(2, 2), out int col))
+                    {
+                        row--;
+                        col--;
+
+                        if (row >= 0 && row < PolybiusGrid.GetLength(0) && col >= 0 && col < PolybiusGrid.GetLength(1))
+                        {
+                            result.Append(PolybiusGrid[row, col]);
+                        }
+                        else
+                        {
+                            result.Append(digitPair);
+                        }
+                    }
+                    else
+                    {
+                        result.Append(digitPair);
+                    }
+                }
+            }
+
+            return result.ToString();
+        }
+
         private bool TryGetCharPosition(char c, out int row, out int col)
         {
             if (PolybiusGrid != null)
             {
-                for (row = 1; row <= PolybiusGrid.GetLength(0); row++)
+                for (row = 0; row < PolybiusGrid.GetLength(0); row++)
                 {
-                    for (col = 1; col <= PolybiusGrid.GetLength(1); col++)
+                    for (col = 0; col < PolybiusGrid.GetLength(1); col++)
                     {
-                        if (PolybiusGrid[row - 1, col - 1] == c)
+                        if (PolybiusGrid[row, col] == c)
                         {
                             return true;
                         }
