@@ -1,0 +1,40 @@
+﻿@page
+@model Encrypting.Pages.HomophonicModel
+@{
+    ViewData["Title"] = "Homophonic Cipher";
+}
+
+<h1>Homophonic Cipher</h1>
+
+<form method="post">
+    <label for="inputText">Enter Text:</label>
+    <input type="text" id="inputText" name="inputText" required />
+
+    <button type="submit" name="operation" value="encrypt">Encrypt</button>
+    <button type="submit" name="operation" value="decrypt">Decrypt</button>
+</form>
+
+@if (Model.ResultText != null)
+{
+    <h3>Result Text:</h3>
+    <p>@Model.ResultText</p>
+}
+
+<h3>Homophonic Cipher Key:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Letter</th>
+            <th>Codes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kvp in Model.HomophonicKey)
+        {
+            <tr>
+                <td>@kvp.Key</td>
+                <td>@string.Join(", ", kvp.Value)</td>
+            </tr>
+        }
+    </tbody>
+</table>
