@@ -53,7 +53,7 @@ namespace Encrypting.Pages
 
         private string DecryptTrithemius(string input, int shift)
         {
-            return EncryptTrithemius(input, 26 - shift); // Decrypt is the same as encrypting with the opposite shift
+            return EncryptTrithemius(input, 26 - shift);
         }
     }
 }
